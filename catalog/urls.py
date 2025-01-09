@@ -1,10 +1,10 @@
 from django.urls import path
-from . import views
-from .views import product_detail
+from .views import HomeView, ContactsView, ProductDetailView, AddProductView
 
 
 urlpatterns = [
-    path('', views.home, name='home'),  # Главная страница
-    path('contacts/', views.contacts, name='contacts'),  # Страница контактов
-    path('product/<int:product_id>/', product_detail, name='product_detail'),
+    path('', HomeView.as_view(), name='home'),  # Главная страница
+    path('contacts/', ContactsView.as_view(), name='contacts'),  # Страница контактов
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),  # Детали продукта
+    path('add_product/', AddProductView.as_view(), name='add_product'),  # Добавление продукта
 ]
