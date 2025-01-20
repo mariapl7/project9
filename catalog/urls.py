@@ -7,4 +7,8 @@ urlpatterns = [
     path('contacts/', ContactsView.as_view(), name='contacts'),  # Страница контактов
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),  # Детали продукта
     path('add_product/', AddProductView.as_view(), name='add_product'),  # Добавление продукта
+    path('', product_list, name='product_list'),
+    path('product/create/', product_create, name='product_create'),
+    path('product/update/<int:pk>/', product_update, name='product_update'),
+    path('product/delete/<int:pk>/', product_delete, name='product_delete'),
 ]

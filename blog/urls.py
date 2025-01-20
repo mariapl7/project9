@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView
+from .views import product_list, product_create, product_update, product_delete
 
 
 urlpatterns = [
