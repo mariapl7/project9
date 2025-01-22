@@ -45,7 +45,6 @@ def product_delete(request, pk):
     return render(request, 'myapp/product_confirm_delete.html', {'product': product})
 
 
-
 class HomeView(ListView):
     model = Product
     template_name = 'catalog/home.html'
