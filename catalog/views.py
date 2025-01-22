@@ -6,7 +6,7 @@ from .models import Product
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .forms import ProductForm
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 
 
 def product_list(request):
@@ -16,10 +16,10 @@ def product_list(request):
 
 def product_create(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('product_list')
+            return redirect('product_list')  # Убедитесь, что у вас есть соответствующий маршрут
     else:
         form = ProductForm()
     return render(request, 'myapp/product_form.html', {'form': form})
