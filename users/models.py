@@ -8,5 +8,13 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True)
     country = models.CharField(max_length=100, blank=True)
 
+    # Указываем email как поле для авторизации
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []  # Укажите другие поля, которые должны быть обязательными при создании пользователя
+
     def __str__(self):
         return self.email
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'

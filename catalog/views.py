@@ -7,6 +7,7 @@ from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .forms import ProductForm
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def product_list(request):
@@ -77,3 +78,9 @@ class AddProductView(CreateView):
     form_class = ProductForm
     template_name = 'catalog/add_product.html'
     success_url = reverse_lazy('home')
+
+
+class ProductListView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'catalog/product_list.html'
+    login_url = 'login'  # Укажите URL для перенаправления, если пользователь не авторизован

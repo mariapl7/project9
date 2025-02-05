@@ -6,3 +6,4 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('edit_profile/', edit_profile, name='edit_profile'),  # URL для редактирования профиля
 ]
+
