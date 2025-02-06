@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import UserProfileForm
+from django.conf import settings
 
 
 def register(request):
@@ -56,3 +57,21 @@ def edit_profile(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'users/edit_profile.html', {'form': form})
+
+
+class CreateView:
+    pass
+
+
+class UserRegisterView(CreateView):
+
+    def form_valid(self, form):
+        user = form.save()
+        send_mail(
+            'Добро пожаловать!',
+            'Спасибо за регистрацию на нашем сайте.',
+            settings.DEFAULT_FROM_EMAIL,  # Замените на ваш почтовый ящик
+            [user.email],
+            fail_silently=False,
+        )
+        return super().form_valid(form)

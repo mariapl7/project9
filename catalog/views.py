@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import render
 from django.views.generic import DetailView
 from .models import Product
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import ProductForm
 from django.shortcuts import redirect, get_object_or_404
@@ -84,3 +84,15 @@ class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'catalog/product_list.html'
     login_url = 'login'  # Укажите URL для перенаправления, если пользователь не авторизован
+
+
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    pass
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    pass
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    pass
