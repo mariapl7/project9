@@ -1,9 +1,7 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.shortcuts import render
-from django.views.generic import DetailView
 from .models import Product
-from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import ProductForm
 from django.shortcuts import redirect, get_object_or_404
