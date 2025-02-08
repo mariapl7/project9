@@ -85,12 +85,13 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
-    pass
+    model = Product
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
-    pass
+    model = Product
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
-    pass
+    model = Product
+    

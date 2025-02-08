@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
+
+from catalog.models import Product
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
@@ -18,7 +20,7 @@ def register(request):
             send_mail(
                 'Добро пожаловать!',
                 'Спасибо за регистрацию на нашем сайте.',
-                'from@example.com',
+                settings.EMAIL_HOST_USER,
                 [user.email],
                 fail_silently=False,
             )
@@ -27,6 +29,44 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+class ProductForm:
+    pass
+
+
+@login_required
+def product_create(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')  # Убедитесь, что у вас есть соответствующий маршрут
+    else:
+        form = ProductForm()
+    return render(request, 'myapp/product_form.html', {'form': form})
+
+
+@login_required
+def product_update(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'myapp/product_form.html', {'form': form})
+
+
+@login_required
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('product_list')
+    return render(request, 'myapp/product_confirm_delete.html', {'product': product})
 
 
 def login_view(request):
@@ -64,13 +104,14 @@ class CreateView:
 
 
 class UserRegisterView(CreateView):
+    # Ваши параметры (model, template_name и т.д.)
 
     def form_valid(self, form):
         user = form.save()
         send_mail(
             'Добро пожаловать!',
             'Спасибо за регистрацию на нашем сайте.',
-            settings.DEFAULT_FROM_EMAIL,  # Замените на ваш почтовый ящик
+            settings.DEFAULT_FROM_EMAIL,  # Используйте почтовый ящик из настроек
             [user.email],
             fail_silently=False,
         )
