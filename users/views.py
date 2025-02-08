@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
-
 from catalog.models import Product
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth import login
@@ -104,7 +103,6 @@ class CreateView:
 
 
 class UserRegisterView(CreateView):
-    # Ваши параметры (model, template_name и т.д.)
 
     def form_valid(self, form):
         user = form.save()
