@@ -8,6 +8,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import UserProfileForm
 from django.conf import settings
+from .models import Product
+from .forms import ProductForm
 
 
 def register(request):
@@ -15,11 +17,12 @@ def register(request):
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+
             # Отправка приветственного письма
             send_mail(
                 'Добро пожаловать!',
                 'Спасибо за регистрацию на нашем сайте.',
-                settings.EMAIL_HOST_USER,
+                settings.EMAIL_HOST_USER,  # Используем почтовый ящик из настроек
                 [user.email],
                 fail_silently=False,
             )
@@ -45,7 +48,6 @@ def product_create(request):
         form = ProductForm()
     return render(request, 'myapp/product_form.html', {'form': form})
 
-
 @login_required
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -57,7 +59,6 @@ def product_update(request, pk):
     else:
         form = ProductForm(instance=product)
     return render(request, 'myapp/product_form.html', {'form': form})
-
 
 @login_required
 def product_delete(request, pk):
