@@ -15,6 +15,7 @@ def product_create(request):
         form = ProductForm()
     return render(request, 'catalog/product_form.html', {'form': form})
 
+
 @login_required
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -27,6 +28,7 @@ def product_update(request, pk):
         form = ProductForm(instance=product)
     return render(request, 'catalog/product_form.html', {'form': form})
 
+
 @login_required
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -34,4 +36,23 @@ def product_delete(request, pk):
         product.delete()
         return redirect('product_list')
     return render(request, 'catalog/product_confirm_delete.html', {'product': product})
-    
+
+
+class HomeView:
+    pass
+
+
+class ContactsView:
+    pass
+
+
+class ProductDetailView:
+    pass
+
+
+class AddProductView:
+    pass
+
+
+def product_list():
+    return None
