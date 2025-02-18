@@ -70,8 +70,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mydatabase',  # Замените на имя вашей базы данных
-        'USER': 'myuser',      # Замените на пользователя вашей базы данных
-        'PASSWORD': 'mypassword',  # Замените на пароль вашей базы данных
+        'USER': 'postgres',      # Замените на пользователя вашей базы данных
+        'PASSWORD': 'Mari7881',  # Замените на пароль вашей базы данных
         'HOST': 'localhost',    # или хост вашей базы данных
         'PORT': '5432',         # стандартный порт PostgreSQL
         'OPTIONS': {
