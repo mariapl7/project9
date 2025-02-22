@@ -1,0 +1,15 @@
+<!-- products/templates/products/product_list.html -->
+<h1>Список продуктов</h1>
+<ul>
+    {% for product in products %}
+        <li>{{ product.name }}</li>
+    {% if user.is_authenticated %}
+        <a href="{% url 'product_update' product.pk %}">Изменить</a>
+        <a href="{% url 'product_delete' product.pk %}">Удалить</a>
+    {% endif %}
+    {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+    <a href="{% url 'product_create' %}">Добавить продукт</a>
+{% endif %}
