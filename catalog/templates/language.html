@@ -1,7 +1,0 @@
-{% if product.owner == user or user.has_perm('products.can_unpublish_product') %}
-       <a href="{% url 'edit_product' product.id %}">Редактировать</a>
-       <form action="{% url 'delete_product' product.id %}" method="post">
-           {% csrf_token %}
-           <button type="submit">Удалить</button>
-       </form>
-{% endif %}

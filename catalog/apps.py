@@ -14,7 +14,6 @@ class ProductsConfig(AppConfig):
     def ready(self):
         from django.contrib.auth.models import Group, Permission
 
-
 def create_moderator_group(sender, **kwargs):
     group, created = Group.objects.get_or_create(name='Модератор продуктов')
 
@@ -27,5 +26,5 @@ def create_moderator_group(sender, **kwargs):
     ]
 
     for perm in permissions:
-        permission = Permission.objects.get(codename=perm.split('.')[-1])
+        permission = get(codename=perm.split('.')[-1])
         group.permissions.add(permission)
