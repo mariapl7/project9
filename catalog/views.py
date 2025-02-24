@@ -1,10 +1,37 @@
+from django.views.generic import UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
+from .models import Product
+from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product
 from .forms import ProductForm
 from django.contrib.auth.decorators import permission_required
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+
+class Product:
+    pass
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'product_list.html'
+    context_object_name = 'products'
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    template_name = 'edit_product.html'
+    fields = ['name', 'description', 'price', 'category']
+    success_url = reverse_lazy('product_list')
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('product_list')
 
 
 @login_required

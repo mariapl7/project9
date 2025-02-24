@@ -2,8 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Category:
-    pass
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -14,8 +17,6 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -23,10 +24,17 @@ class Product(models.Model):
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    is_published = models.BooleanField(default=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
     class Meta:
         permissions = [
             ("can_unpublish_product", "Can unpublish product"),
         ]
 
-    def __str__(self):
-        return self.name
+
