@@ -1,17 +1,10 @@
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from django.urls import reverse_lazy
 from .models import Product
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404, redirect
 from .forms import ProductForm
 from django.contrib.auth.decorators import permission_required
-from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django import forms
-
-
-class Product:
-    pass
 
 
 class ProductListView(ListView):
@@ -20,164 +13,51 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
 
-class ProductUpdateView(UpdateView):
+class ProductDetailView(DetailView):
     model = Product
-    template_name = 'edit_product.html'
-    fields = ['name', 'description', 'price', 'image', 'category', 'status']
-    success_url = reverse_lazy('product_list')
+    template_name = 'product_detail.html'
+    context_object_name = 'product'
 
-class ProductDeleteView(DeleteView):
-    model = Product
-    template_name = 'confirm_delete.html'
-    success_url = reverse_lazy('product_list')
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'create_product.html'
     fields = ['name', 'description', 'price', 'image', 'category', 'status']
     success_url = reverse_lazy('product_list')
 
-
-@login_required
-def product_create(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)  # Создаем объект, но не сохраняем
-            product.owner = request.user  # Устанавливаем владельца
-            product.save()  # Сохраняем продукт в базе данных
-            return redirect('product_list')
-    else:
-        form = ProductForm()
-    return render(request, 'create_product.html', {'form': form})
+    def form_valid(self, form):
+        form.instance.owner = self.request.user  # Устанавливаем владельца
+        return super().form_valid(form)
 
 
-@login_required
-def product_update(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('product_list')
-    else:
-        form = ProductForm(instance=product)
-    return render(request, 'catalog/product_form.html', {'form': form})
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    template_name = 'edit_product.html'
+    fields = ['name', 'description', 'price', 'image', 'category', 'status']
+    success_url = reverse_lazy('product_list')
+
+    def test_func(self):
+        product = self.get_object()
+        return product.owner == self.request.user or self.request.user.has_perm('products.can_unpublish_product')
 
 
-@login_required
-def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        product.delete()
-        return redirect('product_list')
-    return render(request, 'catalog/product_confirm_delete.html', {'product': product})
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Product
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('product_list')
 
-
-class HomeView:
-    pass
-
-
-class ContactsView:
-    pass
-
-
-class ProductDetailView:
-    pass
-
-
-class AddProductView:
-    pass
-
-
-def product_list():
-    return None
-
-
-class CreateProductView(LoginRequiredMixin, View):
-    def get(self, request):
-        form = ProductForm()
-        return render(request, 'create_product.html', {'form': form})
-
-    def post(self, request):
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)  # Создаем объект, но не сохраняем
-            product.owner = request.user  # Устанавливаем владельца
-            product.save()  # Сохраняем продукт в базе данных
-            return redirect('product_list')
-        return render(request, 'create_product.html', {'form': form})
+    def test_func(self):
+        product = self.get_object()
+        return product.owner == self.request.user or self.request.user.has_perm('products.can_unpublish_product')
 
 
 @permission_required('products.can_unpublish_product', raise_exception=True)
-def unpublish_product(product_id):
+def unpublish_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.is_published = False
     product.save()
     return redirect('product_list')
 
 
-@login_required
-def edit_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if product.owner != request.user and not request.user.has_perm('products.can_unpublish_product'):
-        return redirect('product_list')  # Или вернуть ошибку 403
-
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('product_list')
-    else:
-        form = ProductForm(instance=product)
-    return render(request, 'edit_product.html', {'form': form})
-
-
-@login_required
-def delete_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if product.owner != request.user and not request.user.has_perm('products.can_unpublish_product'):
-        return redirect('product_list')  # Или вернуть ошибку 403
-
-    if request.method == 'POST':
-        product.delete()
-        return redirect('product_list')
-    return render(request, 'confirm_delete.html', {'product': product})
-
-
-class EditProductView(LoginRequiredMixin, UserPassesTestMixin, View):
-    def test_func(self):
-        product = get_object_or_404(Product, id=self.kwargs['product_id'])
-        return product.owner == self.request.user or self.request.user.has_perm('products.can_unpublish_product')
-
-    def get(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-        form = ProductForm(instance=product)
-        return render(request, 'edit_product.html', {'form': form})
-
-    def post(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('product_list')
-        return render(request, 'edit_product.html', {'form': form})
-
-
-class DeleteProductView(LoginRequiredMixin, UserPassesTestMixin, View):
-    def test_func(self):
-        product = get_object_or_404(Product, id=self.kwargs['product_id'])
-        return product.owner == self.request.user or self.request.user.has_perm('products.can_unpublish_product')
-
-    def get(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-        return render(request, 'confirm_delete.html', {'product': product})
-
-    def post(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-        product.delete()
-        return redirect('product_list')
-
-
-class ProductListView:
+class HomeView:
     pass
