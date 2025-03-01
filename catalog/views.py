@@ -5,6 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from .forms import ProductForm
 from django.contrib.auth.decorators import permission_required
+from django.core.cache import cache
+from django.shortcuts import render
+from .services import get_products_by_category
 
 
 class ProductListView(ListView):
@@ -61,3 +64,18 @@ def unpublish_product(request, product_id):
 
 class HomeView:
     pass
+
+def product_detail(request, product_id):
+    cache_key = f'product_{product_id}'
+    product = cache.get(cache_key)
+
+    if not product:
+        product = get_object_or_404(Product, id=product_id)
+        cache.set(cache_key, product, timeout=60*15)  # Кешировать на 15 минут
+
+    return render(request, 'product_detail.html', {'product': product})
+
+
+def products_by_category(request, category_id):
+    products = get_products_by_category(category_id)
+    return render(request, 'products/products_by_category.html', {'products': products})
