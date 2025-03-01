@@ -1,0 +1,31 @@
+<!-- products/templates/products/product_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список продуктов</title>
+</head>
+<body>
+    <h1>Список продуктов</h1>
+    <a href="{% url 'create_product' %}">Создать новый продукт</a>
+    <ul>
+        {% for product in products %}
+            <li>
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <p>Цена: {{ product.price }}</p>
+                <p>Категория: {{ product.category.name }}</p>
+                {% if user.is_authenticated %}
+                    {% if product.owner == user or user.has_perm('products.can_unpublish_product') %}
+                        <a href="{% url 'edit_product' product.id %}">Редактировать</a>
+                        <form action="{% url 'delete_product' product.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Удалить</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

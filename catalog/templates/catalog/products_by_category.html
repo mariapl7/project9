@@ -1,0 +1,8 @@
+<h1>Продукты в категории</h1>
+<ul>
+    {% for product in products %}
+        <li>{{ product.name }} - {{ product.price }} руб.</li>
+    {% empty %}
+        <li>Нет продуктов в этой категории.</li>
+    {% endfor %}
+</ul>

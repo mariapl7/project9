@@ -1,0 +1,20 @@
+<!-- blog/templates/blog/blogpost_detail.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>Дата создания: {{ post.created_at }}</p>
+    <p>Просмотров: {{ post.views_count }}</p>
+    <a href="{% url 'blogpost_edit' post.pk %}">Редактировать</a>
+    <form action="{% url 'blogpost_delete' post.pk %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
+    <a href="{% url 'blogpost_list' %}">Назад к списку</a>
+</body>
+</html>
