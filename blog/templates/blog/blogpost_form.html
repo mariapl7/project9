@@ -1,0 +1,17 @@
+<!-- blog/templates/blog/blogpost_form.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if post %}Редактировать пост{% else %}Создать новый пост{% endif %}</title>
+</head>
+<body>
+    <h1>{% if post %}Редактировать пост{% else %}Создать новый пост{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="{% url 'blogpost_list' %}">Назад к списку</a>
+</body>
+</html>

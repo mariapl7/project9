@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <h1>Список продуктов</h1>
+    <a href="{% url 'product_create' %}">Добавить продукт</a>
+    <ul>
+        {% for product in products %}
+            <li>
+                {{ product.name }} - <a href="{% url 'product_update' product.pk %}">Редактировать</a>
+                <form action="{% url 'product_delete' product.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Удалить</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</head>
+<body>
+
+</body>
+</html>
