@@ -1,0 +1,38 @@
+[
+    {
+        "model": "catalog.product",
+        "pk": 1,
+        "fields": {
+            "name": "Smartphone",
+            "price": 699.99,
+            "category": 1
+        }
+    },
+    {
+        "model": "catalog.product",
+        "pk": 2,
+        "fields": {
+            "name": "Laptop",
+            "price": 999.99,
+            "category": 1
+        }
+    },
+    {
+        "model": "catalog.product",
+        "pk": 3,
+        "fields": {
+            "name": "T-shirt",
+            "price": 19.99,
+            "category": 2
+        }
+    },
+    {
+        "model": "catalog.product",
+        "pk": 4,
+        "fields": {
+            "name": "Novel",
+            "price": 14.99,
+            "category": 3
+        }
+    }
+]
